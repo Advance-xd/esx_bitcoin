@@ -198,9 +198,72 @@ function OpenBuyMenu()
 	  end)
 end
 
-RegisterNetEvent('esx_bitcoin:closemenu')
-AddEventHandler('esx_bitcoin:closemenu', function()
+
+inMenu = false
+
+RegisterCommand('bitcoin', function(source, args, rawCommand)
+	if inMenu then
+		closeUI()
+		inMenu = false
+	else
+		ESX.TriggerServerCallback('esx_bitcoin:fetchbitcoin', function(bitcoinss)
+			sendbitcoins = bitcoinss			
+		end)
+		ESX.TriggerServerCallback('esx_bitcoin:fetchgraphics', function(graphicss)
+			sendgraphics = graphicss
+		end)
+		openUI()
+	end
+end)
+
+
+
+RegisterNUICallback('close', function(data, cb) 
+	if (inMenu) then
+		closeUI()
+	end
+end)
+
+
+
+function openUI()
+	inMenu = true
+	SetNuiFocus(true, true)
+
+	if sendgraphics == nil or sendgraphics == nil then
+		SendNUIMessage({type = "open"})
+		Citizen.Wait(500)
+		update()
+	else
+		SendNUIMessage({type = "open", bitcoins = sendbitcoins, graphics = sendgraphics})
+	end
+end
+
+function update()
 	
-	menu.close()
-	
+	ESX.TriggerServerCallback('esx_bitcoin:fetchbitcoin', function(bitcoinss)
+		sendbitcoins = bitcoinss			
+	end)
+	--ESX.TriggerServerCallback('esx_bitcoin:fetchgraphics', function(graphicss)
+	--	sendgraphics = graphicss
+	--end)
+	SendNUIMessage({type = "update", bitcoins = sendbitcoins, graphics = sendgraphics})	
+end
+
+function closeUI() 
+	inMenu = false
+	SetNuiFocus(false, false)
+    SendNUIMessage({type = "close"})
+end
+
+Citizen.CreateThread(function()
+	Citizen.Wait(1000)
+	while true do
+		
+		print('update')
+		update()
+		
+		Citizen.Wait(1000)
+	end
+
 end)

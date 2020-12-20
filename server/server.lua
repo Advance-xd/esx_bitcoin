@@ -50,7 +50,6 @@ AddEventHandler("esx_bitcoin:buy", function()
             xPlayer.removeAccountMoney('bank', Config.price)
             xPlayer.removeInventoryItem(1, graffe)
             TriggerClientEvent('esx:showNotification', source, 'Du köpte en bitcoin farm')
-            TriggerClientEvent('esx_bitcoin:closemenu', source)
             CreateFarm(source)
 
         else
