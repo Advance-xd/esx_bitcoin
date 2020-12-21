@@ -3,7 +3,7 @@ game 'gta5'
 
 
 
-version '2.1'
+version '2.2'
 
 ui_page 'client/html/UI.html'
 

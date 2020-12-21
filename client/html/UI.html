@@ -49,23 +49,7 @@
                     </button>
                 </div>
             </div>
-            <div class="flex">
-                <div class="pub box-shadow confiance">
-                    <p>
-                        <span>You can trust us</span><br>
-                        the stock market has been going up by 7%
-                    </p>
-                    <div class="circle-confiance"></div>
-                </div>
-                <div class="pub box-shadow social">
-                    <button class="btn btn-blue" id="new_bank">
-                        <i class="far fa-handshake"></i>
-                        <span class="far fa-handshake icon"></span>
-                        <p>New Banking<br>
-                        <span>the modern day banking system</span></p>
-                    </button>
-                </div>
-            </div>
+            
         </div>
 <!-- ########### BUY MENU ###########  -->
         <div class="cont-content" id="buyUI">
@@ -77,7 +61,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr data-label="company-1">
+                    <tr data-label="company-1">
                         <th>Company 1</th>
                         <th><i class="fas fa-arrow-up"></i> 1.2</th>
                     </tr>
@@ -88,7 +72,7 @@
                     <tr data-label="company-3">
                         <th>Company 3</th>
                         <th><i class="fas fa-circle"></i> 1.2</th>
-                    </tr> -->
+                    </tr>
                 </tbody>
             </table>
             <form>
@@ -109,52 +93,75 @@
             <table id="all">
                 <thead>
                     <tr>
-                        <th>Company</th>
-                        <th>Rate</th>
-                        <th>Sold</th>
+                        <th>Grafikkort</th>
+                        <th>%</th>
+                        <th>Grader</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr>
-                        <th>Company 1</th>
-                        <th><i class="fas fa-arrow-up"></i> 1.2</th>
-                        <th>-</th>
+                    <!--<tr>
+                        <th>Grafikkort 1</th>
+                        <th><i class="fas fa-arrow-up"></i> 99.9</th>
+                        <th>69 °</th>
                     </tr> -->
                 </tbody>
             </table>
         </div>
 <!-- ########### SELL MENU ###########  -->
         <div class="cont-content" id="sellUI">
-            <table id="sell">
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Invested</th>
-                        <th>Intrest</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- <tr data-label="company-1">
-                        <th>Company 1</th>
-                        <th>100</th>
-                        <th><i class="fas fa-arrow-up"></i> 1.2</th>
-                    </tr> -->
-                </tbody>
-            </table>
-            <form>
-                <button class="btn btn-green" type="submit">
-                    <i class="fas fa-check"></i>
-                    <span class="fas fa-check icon"></span>
-                    <p>Sell<br>
-                    <span>Your Deposit</span></p>
-                </button>
-            </form>
+            <div class="flex">
+                <div class="sellbalance">
+                    Bitcoins: <br>
+                    <span class="money"></span> <br>
+                    Price: <br>
+                    <span class="price"></span> <br>
+                </div>
+                <!--<table id="sell">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Invested</th>
+                            <th>Intrest</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-label="company-1">
+                            <th>Company 1</th>
+                            <th>100</th>
+                            <th><i class="fas fa-arrow-up"></i> 1.2</th>
+                        </tr> 
+                    </tbody>
+                </table>-->
+                
+                    <table></table>
+                    <form>
+                    
+                    <!--<button class="btn btn-green" type="submit">
+                        <i class="fas fa-check"></i>
+                        <span class="fas fa-check icon"></span>
+                        <p>Sell<br>
+                        <span>Sell all bitcons</span></p>
+                    </button>-->
+                        <div class="input-cont">
+                            <label>How much do you want to sell</label>
+                            <input type="number" id="amount" placeholder="0">
+                        </div>
+                        <button class="btn btn-green" type="submit">
+                            <i class="fas fa-check"></i>
+                            <span class="fas fa-check icon"></span>
+                            <p>Sell<br>
+                            <span>Sell your bitcoins</span></p>
+                        </button>
+                    </form>
+                    
+                
+            </div>
         </div>
 <!-- ########### WAITING ###########  -->
         <div class="cont-waiting" id="waiting">
             <div class="content-waiting">
                 <div class="box">
-                    <div class="mainlogo"></div>
+                    <!--<div class="mainlogo"></div> -->
                     <p>Please <span>log in</span><br>
                     by the help of your fingerprint</p>
                 </div>

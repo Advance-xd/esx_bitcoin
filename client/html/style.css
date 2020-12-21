@@ -28,7 +28,7 @@ textarea:focus, input:focus{
 }
 
 .container{
-	height: 600px;
+	height: 510px;
 	width: 900px;
     margin: auto;
     border-radius: 10px;
@@ -460,6 +460,50 @@ label{
 .double-input input{
 	font-size: 35px;
 }
+
+
+.sellbalance{
+	width: 403px;
+    height: 183px;
+    background: #eeeeee;
+    margin-right: 60px;
+    margin-bottom: 60px;
+    padding: 40px;
+    color: #414141;
+    font-size: 16px;
+    /*background-image: url(media/img/curve.png);*/
+    background-repeat: no-repeat;
+    background-position: bottom;
+    border-radius: 10px;
+    box-shadow: -9px -9px 12px 0 rgb(255, 255, 255),
+                9px 9px 12px 0 rgba(0,0,0,.03);
+}
+.sellbalance .name{
+	font-size: 15px;
+	color: #000000;
+	margin-bottom: 5px;
+    display: block;
+}
+.sellbalance .money{
+	font-size: 50px;
+	color: #000000;
+	font-family: "futura", sans-serif;
+}
+
+.sellbalance .price{
+	font-size: 50px;
+	color: #000000;
+	font-family: "futura", sans-serif;
+}
+
+.sellbalance .money::before {
+    content: "";
+}
+
+.sellbalance .money .dollars{
+	color: #e1e0e0;
+}
+
 /*######################################################*/
 /* ###############        WAITING        ###############*/
 /*######################################################*/

@@ -14,9 +14,10 @@ end)
 
 
 
-
-local graphics = 0
 local bitcoins = 0
+local graphics = 0
+
+local farm = false 
 
 Citizen.CreateThread(function()
 	Citizen.Wait(10)
@@ -30,21 +31,19 @@ Citizen.CreateThread(function()
 		if distance < 5.0 then
 			sleep = 5
 			ESX.DrawMarker("Bitcoin Farm", 27, Config.coords.x, Config.coords.y, Config.coords.z, 255, 255, 255, 1.2, 1.2)
-
+			
 			if distance < 1.5 then
 				if IsControlJustPressed(0, 38) then
-					ESX.TriggerServerCallback('esx_bitcoin:fetchbitcoin', function(bitcoinss)
-						bitcoins = bitcoinss			
-					end)
-					ESX.TriggerServerCallback('esx_bitcoin:fetchgraphics', function(graphicss)
-						graphics = graphicss
-						if graphics == 0 then
-							OpenBuyMenu()
-						else
-							OpenMenu()
-						end
-					end)
 					
+					if farm == nil then
+						
+					else
+						if farm then
+							OpenMenu()
+						else
+							OpenBuyMenu()
+						end
+					end
 
 				end
 			end
@@ -59,7 +58,7 @@ end)
 
 function OpenMenu()
 	
-
+	
 	
 	local elements = {
 		{label = "Bitcoins: " .. bitcoins, value = 'bitcoins'},
@@ -184,8 +183,9 @@ function OpenBuyMenu()
 		local selected = data.current.value
 	
 		if selected == 'buy' then
+			menu.close()
 			TriggerServerEvent('esx_bitcoin:buy')
-			
+			farm = true
 
 
 		
@@ -198,7 +198,7 @@ function OpenBuyMenu()
 	  end)
 end
 
-
+------------------------------------------------------- UI ----------------------------------------------------
 inMenu = false
 
 RegisterCommand('bitcoin', function(source, args, rawCommand)
@@ -222,6 +222,29 @@ RegisterNUICallback('close', function(data, cb)
 	if (inMenu) then
 		closeUI()
 	end
+
+end)
+
+RegisterNUICallback("sold", function(data, cb)
+	TriggerServerEvent('esx_bitcoin:addmoney', data.bc)
+end)
+
+RegisterNUICallback("error", function(data, cb)
+	TriggerEvent('esx:showNotification', 'Du har inte så många bitcoins')
+end)
+
+RegisterNUICallback("all", function()
+	SendNUIMessage({type = "all", graphics = sendgraphics})
+end)
+
+RegisterNUICallback("sell", function()
+	if bitcoins > 0 then
+				
+		TriggerServerEvent('esx_bitcoin:addmoney', bitcoins)
+		bitcoins = 0
+	else
+		TriggerEvent('esx:showNotification', 'Du har inga bitcoin')
+	end
 end)
 
 
@@ -239,31 +262,63 @@ function openUI()
 	end
 end
 
-function update()
-	
-	ESX.TriggerServerCallback('esx_bitcoin:fetchbitcoin', function(bitcoinss)
-		sendbitcoins = bitcoinss			
-	end)
-	--ESX.TriggerServerCallback('esx_bitcoin:fetchgraphics', function(graphicss)
-	--	sendgraphics = graphicss
-	--end)
-	SendNUIMessage({type = "update", bitcoins = sendbitcoins, graphics = sendgraphics})	
-end
-
 function closeUI() 
 	inMenu = false
 	SetNuiFocus(false, false)
     SendNUIMessage({type = "close"})
 end
 
-Citizen.CreateThread(function()
-	Citizen.Wait(1000)
-	while true do
-		
-		print('update')
-		update()
-		
-		Citizen.Wait(1000)
-	end
 
+
+
+
+
+RegisterCommand('load', function(source, args, rawCommand)
+    hasfarm()
+	update()
+end)
+
+
+RegisterNetEvent('esx:playerLoaded')
+AddEventHandler('esx:playerLoaded', function(xPlayer)
+	hasfarm()
+	update()
+end)
+
+
+function hasfarm()
+	ESX.TriggerServerCallback('esx_bitcoin:fetchgraphics', function(graphicss)
+		sendgraphics = graphicss
+	end)
+	Citizen.Wait(1000)
+	if sendgraphics == nil then
+		farm = false
+	else
+		farm = true
+	end
+	
+end
+
+function update()
+	
+	ESX.TriggerServerCallback('esx_bitcoin:fetchbitcoin', function(bitcoinss)
+		sendbitcoins = bitcoinss			
+	end)
+	ESX.TriggerServerCallback('esx_bitcoin:fetchgraphics', function(graphicss)
+		sendgraphics = graphicss
+	end)
+	local diff = Config.Diff
+	SendNUIMessage({type = "update", bitcoins = sendbitcoins, graphics = sendgraphics, price = diff})
+	bitcoins = sendbitcoins
+	graphics = sendgraphics 
+end
+
+Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(1000)
+		while farm do
+			update()
+			Citizen.Wait(1000)
+		end
+	end
 end)
