@@ -25,15 +25,16 @@ end)
 
 RegisterServerEvent("esx_bitcoin:addmoney")
 AddEventHandler("esx_bitcoin:addmoney", function(amount)
-    
+    print('sold' .. amount)
     local xPlayer = ESX.GetPlayerFromId(source)  
     local cid = xPlayer["characterId"]
 
     xPlayer.addAccountMoney('bank', amount * Config.Diff)
     TriggerClientEvent('esx:showNotification', source, 'Du sålde ' .. amount .. ' bitcoin för ' .. amount * Config.Diff .. ' kr')
-    MySQL.Async.execute('UPDATE `bitcoin` SET bitcoins = 0 WHERE identifier = @cid',
+    MySQL.Async.execute('UPDATE `bitcoin` SET bitcoins = bitcoins - @amount WHERE identifier = @cid',
         {
             ['@cid'] = cid,
+            ['@amount'] = amount,
         }   
     )
 end)
@@ -108,11 +109,11 @@ ESX.RegisterServerCallback('esx_bitcoin:fetchbitcoin', function(source, cb)
     local cid = player["characterId"]
 
     MySQL.Async.fetchAll('SELECT bitcoins FROM bitcoin WHERE identifier = @cid', {["@cid"] = cid}, function(result)   
-        if result[1].bitcoins ~= nil then
-            cb(result[1].bitcoins)
-            
-        else
+        if result[1].bitcoins == nil then
+            cb(nil)
             print('no bitcoin found')
+        else
+            cb(result[1].bitcoins)
         end
     end)
     
@@ -124,11 +125,12 @@ ESX.RegisterServerCallback('esx_bitcoin:fetchgraphics', function(source, cb)
     local cid = player["characterId"]
 
     MySQL.Async.fetchAll('SELECT graphics FROM bitcoin WHERE identifier = @cid', {["@cid"] = cid}, function(result)
-        if result[1].graphics ~= nil then
-            cb(result[1].graphics)
-            
-        else
+        
+        if result[1].graphics == nil then
+            cb(nil)
             print('no graffe found')
+        else
+            cb(result[1].graphics)
         end
     end)
     
@@ -147,3 +149,4 @@ function CreateFarm(src)
     )
     
 end
+

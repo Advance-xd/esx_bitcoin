@@ -2,22 +2,27 @@ var inMenu = false
 var activeSelected = null
 var activeMenu = null
 
-var bitcoins = 0
+let bitcoins = 0;
+let graphics = 0;
+
 $(function() {
-    window.addEventListener('message', function(event) {
+    addEventListener('message', function(event) {
         bitcons = event.data.bitcoins;
         if(event.data.type == "open") {
             $('#waiting').show();
             $('body').addClass("active");
             
-            console.log(event.data.bitcoins)
+            
             $('.money').html(event.data.bitcoins);
+            $('.price').html(event.data.price);
             
         } else if(event.data.type == "update"){
-            bitcons = event.data.bitcoins;
+            bitcoins = event.data.bitcoins;
+            graphics = event.data.graphics;
             $('.money').html(event.data.bitcoins);
+            $('.price').html(event.data.price);
 
-        } else if(event.data.type == "close"){
+        } else if(event.data.type == "close"){ 
             close()
         } else if(event.data.type == "balance") {
             $('.name').html(event.data.player);
@@ -45,26 +50,27 @@ $(function() {
             }
         } else if(event.data.type == "all") {
             $("#all tbody").empty();
-            var array = event.data.cache
-            for (var e in array) {
-                var obj = array[e];
+            graphics = event.data.graphics + 1;
+            for ( var e = 1; e < graphics; e++ ) {
+                var obj = graphics[e];
 
-                if(obj.active) {
+                /*if(obj.active) {
                     var sold = "No"
                 } else {
                     var sold = "Yes"
-                }
+                }*/
 
                 $('#all tbody').append(`
                     <tr>
-                        <th>${obj.name}</th>
-                        <th>${obj.rate}</th>
-                        <th>${sold}</th>
+                        <th>Grafikkort ${e}</th>
+                        <th>99.9</th>
+                        <th>69</th>
                     </tr>`)
+                    
             }
         } else if(event.data.type == "sell") {
             $("#sell tbody").empty();
-
+            
             var array = event.data.cache
             for (var e in array) {
                 var obj = array[e];
@@ -93,7 +99,7 @@ $(function() {
 
 $('#fingerprint-content').click(function(){
     $('.fingerprint-active, .fingerprint-bar').addClass("active")
-    var watitime = 1000
+    var watitime = 600
     if (bitcoins == 0){
         watitime = 1500;
     }
@@ -117,9 +123,9 @@ $('#close').click(function() {
 $('.input-cont input').on("input", function(e) {
     // console.log(e);
     var input = e.target.value
-    var isnum = /^\d+$/.test(input)
+    //var isnum = /^\d+$/.test(input)
     
-    if(input == "") {
+    if(input >= bitcoins && input < 0) {
         var button = e.target.parentElement.parentElement.lastElementChild
 
         buttonHandle(button, false)
@@ -127,8 +133,9 @@ $('.input-cont input').on("input", function(e) {
     }
     var parent = e.currentTarget.parentElement.parentElement.parentElement
     var active = $(parent).find('table > tbody > .active')[0]
-
-    if(isnum && active) {
+    
+    
+    if(input <= bitcoins && input > 0) {
         var button = e.target.parentElement.parentElement.lastElementChild
         buttonHandle(button)
     }
@@ -136,11 +143,12 @@ $('.input-cont input').on("input", function(e) {
 
 // Process investments
 $('form .btn').click(function (e) {
+    //console.log(e)
     e.preventDefault();
     var div = e.currentTarget.parentElement.parentElement
     var form = e.currentTarget.parentElement
     var inputValue = $(form).find("input[type='number']")[0] || null
-    if(!inputValue || /^\d+$/.test(inputValue.value)) {
+    //if(!inputValue || /^\d+$/.test(inputValue.value)) {
         if(inputValue != null) inputValue = inputValue.value
         var trActive = $(div).find('table > tbody > .active')[0]
 
@@ -149,13 +157,17 @@ $('form .btn').click(function (e) {
         rate = parseFloat(rate.substr(1))
 
         if (activeMenu == "sell") {
-            $.post('http://esx_invest/sellInvestment', JSON.stringify({job: label}))
+            if (inputValue <= bitcoins && inputValue > 0) {
+                $.post('http://esx_bitcoin/sold', JSON.stringify({bc: inputValue}))
+            } else { 
+                $.post('http://esx_bitcoin/error', JSON.stringify({}))
+            }
         } else if(activeMenu == "buy") {
-            $.post('http://esx_invest/buyInvestment', JSON.stringify({job: label, amount: inputValue, boughtRate: rate}))
+            //$.post('http://esx_invest/buyInvestment', JSON.stringify({job: label, amount: inputValue, boughtRate: rate}))
         }
 
         mainPage()
-    }
+    //}
 })
 
 // On table click process activiation + submition
@@ -192,6 +204,8 @@ $('table').click(function(e) {
             } else {
                 button = null
             }
+        } else if(activeMenu == "sold") {
+            console.log('sold')
         }
 
         buttonHandle(button)
@@ -200,7 +214,7 @@ $('table').click(function(e) {
 })
 
 $('#new_bank').click(function() {
-    $.post('http://esx_invest/newBanking', "{}")
+    //$.post('http://esx_invest/newBanking', "{}")
 })
 
 // GENERAL
@@ -208,7 +222,7 @@ $('#buy').click(function() {
     $('#general').hide();
     $('#buyUI').show();
     $('#close').html("Back <i class='fas fa-sign-out-alt'></i>");
-    $.post('http://esx_invest/list', "{}")
+    //$.post('http://esx_invest/list', "{}")
     inMenu = true
     activeMenu = "buy"
 })
@@ -217,7 +231,7 @@ $('#all').click(function() {
     $('#general').hide();
     $('#allUI').show();
     $('#close').html("Back <i class='fas fa-sign-out-alt'></i>");
-    $.post('http://esx_invest/all', "{}")
+    $.post('http://esx_bitcoin/all', "{}")
     inMenu = true
     activeMenu = "all"
 })
@@ -226,7 +240,7 @@ $('#sell').click(function() {
     $('#general').hide();
     $('#sellUI').show();
     $('#close').html("Back <i class='fas fa-sign-out-alt'></i>");
-    $.post('http://esx_invest/sell', "{}")
+    //$.post('http://esx_invest/sell', "{}")
     inMenu = true
     activeMenu = "sell"
 })
@@ -242,6 +256,8 @@ document.onkeyup = function(data){
 }
 
 function buttonHandle(button, activate = true) {
+    
+    
     if(typeof button != "object") return false;
 
     if(activate) {
