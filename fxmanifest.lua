@@ -1,8 +1,6 @@
 fx_version 'bodacious'
 game 'gta5'
 
-
-
 version '2.2'
 
 ui_page 'client/html/UI.html'
@@ -33,7 +31,3 @@ files {
     'client/html/media/img/logo-big.png',
     'client/html/media/img/logo-top.png',
 }
-
-
-
-
