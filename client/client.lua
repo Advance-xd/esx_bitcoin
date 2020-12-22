@@ -11,9 +11,6 @@ Citizen.CreateThread(function()
 end)
 
 
-
-
-
 local bitcoins = 0
 local graphics = 0
 
@@ -53,8 +50,6 @@ Citizen.CreateThread(function()
 	end
 
 end)
-
-
 
 function OpenMenu()
 	
@@ -199,6 +194,7 @@ function OpenBuyMenu()
 end
 
 ------------------------------------------------------- UI ----------------------------------------------------
+
 inMenu = false
 
 RegisterCommand('bitcoin', function(source, args, rawCommand)
@@ -215,8 +211,6 @@ RegisterCommand('bitcoin', function(source, args, rawCommand)
 		openUI()
 	end
 end)
-
-
 
 RegisterNUICallback('close', function(data, cb) 
 	if (inMenu) then
@@ -247,8 +241,6 @@ RegisterNUICallback("sell", function()
 	end
 end)
 
-
-
 function openUI()
 	inMenu = true
 	SetNuiFocus(true, true)
@@ -267,11 +259,6 @@ function closeUI()
 	SetNuiFocus(false, false)
     SendNUIMessage({type = "close"})
 end
-
-
-
-
-
 
 RegisterCommand('load', function(source, args, rawCommand)
     hasfarm()
